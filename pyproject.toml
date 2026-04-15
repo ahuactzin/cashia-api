@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cashia-api"
+version = "0.1.0"
+description = "Cashia FastAPI application"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+  { name = "Juan Manuel Ahuactzin" }
+]
+dependencies = [
+  "pandas==1.5.3",
+  "fastapi",
+  "boto3==1.42.83",
+  "uvicorn[standard]",
+  "pydantic",
+  "numpy==1.26.0",
+  "python-multipart",
+  "cashia-core==1.1.0",
+  "cashia-model==1.1.0"
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
