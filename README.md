@@ -1,116 +1,417 @@
-# apipk
-Promocash score api
+# Cashia API
 
-# Como generar la versión para despliegue en windows
-1.	Copiar el conjunto de archivos en un nuevo folder con el nombre de la versión por ejemplo apipkV0.7
-2.	Colocarse dentro del directorio (en este caso apipkV0.9)
-3.	Crear un nuevo ambiente virtual de Python haciendo, por ejemplo:
+**cashia-api** is the web service layer of the Cashia ecosystem.\
+It exposes the core functionality of the system through a REST API built
+with **FastAPI**.
 
-    python -m venv cashia
+The API integrates several internal Cashia packages:
 
-4.	Salir del ambiente base (base) haciendo:
+-   **cashia-core** -- Shared utilities and configuration
+-   **cashia-model** -- Machine learning models used for prediction
+-   **cce** -- Cashia Credit Engine
 
-    conda deactivate
+The API is intended for local development first, and can later be
+deployed in environments such as AWS.
 
-5.	Activar el nuevo ambiente virtual de Python:
+------------------------------------------------------------------------
 
-    .\apipkenv\Scripts\activate
+# 1. Requirements
 
-6.	Si se tiene el archivo requirements_Windows.txt ejecutar, sino, pasara al paso siguiente: 
+Before installing the API, ensure the following are available:
 
-    pip install --no-cache-dir -r requirements.txt
+-   Python **3.11**
+-   `pip`
+-   Access to the Cashia repositories:
+    -   `cashia-core`
+    -   `cashia-model`
+    -   `cce`
+    -   `cashia-api`
 
-1.  Si falta alguna librería instalarla con pip y hacer:
+Recommended development tools:
 
-    pip freeze > requirements_Windows.txt
+-   **Anaconda / Miniconda**
+-   **Visual Studio Code**
 
-7.	Lanzar el servidor con:
+------------------------------------------------------------------------
 
-    `uvicorn cashia_api.main:app --reload`
+# 2. Environment Setup
 
-8.	Probar que todo funcione con el notebook test_apipk_from_file
+## Option A --- Using Conda (recommended)
 
-# Como instalar la API en un servidor en windows
-1.	Lanzar una consola Anaconda Prompt
-2.	Colocarse en el directorio en el que se descomprimió por ejemplo cashia
-3.	Crear el ambiente con: `python -m venv apipkenv python=3.11`
-4.	Desactivar el ambiente actual: `conda deactivate`
-5.	Activar el ambiente venv: `.\apipkenv\Scripts\activate`
-6.	Ejecutar: `pip install --no-cache-dir -r requirements.txt`
-7.	Lanzar el servidor con:
-    a.	En modo pruebas: `uvicorn cashia_api.main:app --reload`
-    b.	En modo producción: `uvicorn cashia_api.main:app` 
+Create the environment:
 
+``` bash
+conda create -n cashia_env python=3.11
+```
 
-# Como generar la versión para despliegue en linux
+Activate it:
 
-1.  Agregar
+``` bash
+conda activate cashia_env
+```
 
-        export PYTHONPATH="<mi ruta>/serpicl:$PYTHONPATH"
-    
-    en el archivvo `.bashrc`
+------------------------------------------------------------------------
 
-2. hacer source .bashrc
+## Option B --- Using venv
 
-3.	Copiar el conjunto de archivos en un nuevo folder con el nombre de la versión por ejemplo apipkV0.9
-4.	Colocarse dentro del directorio (en este caso apipkV0.9)
-5.  Desactivar el ambiente python si es necesario haciendo:
+Create a virtual environment:
 
-    conda deactivate
-    
-6.	Crear un nuevo ambiente virtual de Python haciendo, por ejemplo:
+``` bash
+python -m venv cashia_env
+```
 
-    conda create -n apipkenv
+Activate it:
 
-7.	Activar el nuevo ambiente virtual de Python:
+### Windows
 
-    conda activate apipkenv
+``` bash
+cashia_env\Scripts\activate
+```
 
-8.  instalar pip si es necesario con:
+### Linux / macOS
 
-    sudo apt install python3-pip
+``` bash
+source cashia_env/bin/activate
+```
 
-9.	Ejecutar: 
+------------------------------------------------------------------------
 
-    pip install --no-cache-dir -r requirements.txt
+# 3. Install Dependencies
 
-10.	Lanzar el servidor con:
+Navigate to the root directory that contains all Cashia repositories.
 
-    `python3 -m uvicorn cashia_api.main:app --reload`
+Example structure:
 
+``` text
+cashia
+│
+├── cashia-core
+├── cashia-model
+├── cashia-api
+├── cce
+└── mlp
+```
 
-11. Si hace falta alguna o algunas librerías instalarlas hasta que tenga éxito la ejecución del paso anterior
+Install each package in **editable mode**:
 
-12.	Actualizar el archivo de requerimientos: 
+``` bash
+pip install -e cashia-core
+pip install -e cashia-model
+pip install -e cce
+pip install -e mlp
+pip install -e cashia-api
+```
 
-    pip freeze > requirementsLinux.txt
+Editable mode allows development changes without reinstalling the
+package.
 
-13. Volver a lanzar el servidor si es necesario con
+------------------------------------------------------------------------
 
-    `python3 -m uvicorn cashia_api.main:app --reload`
+# 4. Project Structure
 
-11.	Probar que todo funcione con el notebook test_apipk_from_file
+A typical `cashia-api` structure is:
 
-# Como instalar la API en un servidor Linux
+``` text
+cashia-api
+│   pyproject.toml
+│   README.md
+│
+└───src
+    └───cashia_api
+        │   __init__.py
+        │   main.py
+        │   dependencies.py
+        │   schemas.py
+        │
+        ├───routers
+        │       ...
+        │
+        ├───services
+        │       ...
+        │
+        └───utils
+                ...
+```
 
-1.  Colocarse en el directorio en el que se descomprimió por ejemplo cashia
-2.  Desactivar el ambiente python si es necesario haciendo:
+## Suggested role of each module
 
-    `conda deactivate`
-    
-3.	Crear un nuevo ambiente virtual de Python haciendo, por ejemplo:
+-   **main.py**\
+    Entry point of the FastAPI application. Usually defines the `app`,
+    CORS configuration, startup/shutdown logic, and router registration.
 
-    `conda create -n apipkenv python=3.11`
+-   **routers/**\
+    Defines the API endpoints grouped by domain or functionality.
 
-4.	Activar el nuevo ambiente virtual de Python:
+-   **services/**\
+    Contains business logic that should remain separate from the HTTP
+    layer.
 
-    `conda activate apipkenv`
+-   **schemas.py**\
+    Defines request and response models using **Pydantic**.
 
-5.	Ejecutar: 
+-   **dependencies.py**\
+    Centralizes FastAPI dependencies such as shared services,
+    configuration managers, or state accessors.
 
-    `pip install --no-cache-dir -r requirements.txt`
+-   **utils/**\
+    Utility functions used across the API package.
 
-6.	Lanzar el servidor con:
+------------------------------------------------------------------------
 
-    `python3 -m uvicorn cashia_api.main:app`
+# 5. Running the API
 
+The API is built with **FastAPI** and can be launched using **Uvicorn**.
+
+From any directory, with the environment activated:
+
+``` bash
+uvicorn cashia_api.main:app --reload
+```
+
+The API will start at:
+
+``` text
+http://127.0.0.1:8000
+```
+
+------------------------------------------------------------------------
+
+# 6. Interactive API Documentation
+
+FastAPI automatically generates documentation.
+
+After starting the server, you can access:
+
+## Swagger UI
+
+``` text
+http://127.0.0.1:8000/docs
+```
+
+## ReDoc
+
+``` text
+http://127.0.0.1:8000/redoc
+```
+
+These interfaces allow testing endpoints directly from the browser.
+
+------------------------------------------------------------------------
+
+# 7. Example Development Workflow
+
+Typical development cycle:
+
+1.  Modify API code
+2.  Run the API with reload enabled
+3.  Test endpoints using:
+    -   Swagger UI
+    -   curl
+    -   Postman
+    -   frontend applications
+
+Example:
+
+``` bash
+uvicorn cashia_api.main:app --reload
+```
+
+If package metadata or dependencies change:
+
+``` bash
+pip install -e cashia-api --upgrade
+```
+
+------------------------------------------------------------------------
+
+# 8. Environment Variables
+
+Depending on your current architecture, the API may use environment
+variables such as:
+
+``` text
+STORAGE_BACKEND
+LOCAL_STORAGE_ROOT
+S3_BUCKET
+S3_PREFIX
+```
+
+## Example: local storage
+
+### Windows PowerShell
+
+``` powershell
+$env:STORAGE_BACKEND="local"
+$env:LOCAL_STORAGE_ROOT="G:\My Drive\19_Projects\cashia\cashia-core"
+```
+
+### Linux / macOS
+
+``` bash
+export STORAGE_BACKEND=local
+export LOCAL_STORAGE_ROOT=/path/to/cashia-core
+```
+
+## Example: S3 storage
+
+### Windows PowerShell
+
+``` powershell
+$env:STORAGE_BACKEND="s3"
+$env:S3_BUCKET="my-cashia-bucket"
+$env:S3_PREFIX="cashia-dev"
+```
+
+### Linux / macOS
+
+``` bash
+export STORAGE_BACKEND=s3
+export S3_BUCKET=my-cashia-bucket
+export S3_PREFIX=cashia-dev
+```
+
+------------------------------------------------------------------------
+
+# 9. CORS Configuration
+
+If the API is accessed from a frontend application running in a browser,
+**CORS** may need to be configured.
+
+A typical FastAPI configuration looks like:
+
+``` python
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+```
+
+Adjust allowed origins according to your frontend environment.
+
+------------------------------------------------------------------------
+
+# 10. Example Request and Response
+
+The exact endpoints depend on your router definitions, but a typical
+prediction endpoint might look like this.
+
+## Example request
+
+``` http
+POST /predict
+Content-Type: application/json
+```
+
+``` json
+{
+
+}
+```
+
+## Example response
+
+``` json
+{
+
+}
+```
+
+ToDo: Replace this example with the real request/response schemas used by your
+API.
+
+------------------------------------------------------------------------
+
+# 11. Running in Development
+
+Recommended command:
+
+``` bash
+uvicorn cashia_api.main:app --reload
+```
+
+Optional custom port:
+
+``` bash
+uvicorn cashia_api.main:app --reload --port 8001
+```
+
+Optional host binding:
+
+``` bash
+uvicorn cashia_api.main:app --reload --host 0.0.0.0
+```
+
+------------------------------------------------------------------------
+
+# 12. Troubleshooting
+
+## Port already in use
+
+If port 8000 is busy, run:
+
+``` bash
+uvicorn cashia_api.main:app --reload --port 8001
+```
+
+## Environment issues
+
+Verify the Python version:
+
+``` bash
+python --version
+```
+
+Expected:
+
+``` text
+Python 3.11.x
+```
+
+## Import errors
+
+If imports fail after code changes, reinstall editable packages:
+
+``` bash
+pip install -e cashia-core --upgrade
+pip install -e cashia-model --upgrade
+pip install -e cce --upgrade
+pip install -e mlp --upgrade
+pip install -e cashia-api --upgrade
+```
+
+## Wrong interpreter in VS Code
+
+Ensure that VS Code is using the correct Python interpreter, usually the
+one from:
+
+``` text
+cashia_env
+```
+
+------------------------------------------------------------------------
+
+# 13. Future Documentation
+
+Additional documentation can later include:
+
+-   AWS deployment
+-   Docker containers
+-   CI/CD pipelines
+-   API authentication and security
+-   Production configuration
+-   Logging and monitoring
+
+------------------------------------------------------------------------
+
+# Author
+
+Juan Manuel Ahuactzin\
+Cashia Project
