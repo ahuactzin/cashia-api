@@ -5,7 +5,7 @@ from cashia_core.common_tools.configuration.cashiaconstants import *
 from cashia_core.common_tools.configuration.resource_keys import get_model_path
 from cashia_core.common_tools.storage import get_storage
 
-import cashia_model.model.pm_model_rebuilder as pmmr
+import cashia_model.pm_model_rebuilder as pmmr
 from cashia_api.models import *
 
 COMPLETE_MODEL_KEYS = {

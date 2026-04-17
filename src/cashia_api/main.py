@@ -7,7 +7,7 @@ from contextlib import asynccontextmanager
 from cashia_core.common_tools.configuration.cashiaconstants import print_version
 from cashia_core.common_tools.utils import *
 
-import cashia_model.model.pm_model_rebuilder as pmmr
+import cashia_model.pm_model_rebuilder as pmmr
 
 from cashia_api.services.daemon import ModelsConfigurationDaemon
 
