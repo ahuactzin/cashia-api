@@ -41,30 +41,7 @@ async def lifespan(app: FastAPI):
     except asyncio.CancelledError:
         pass
 
-# Server URL
-SERVER_URL = "127.0.0.1:8000"
-# print_message(f"Current configuration: Ponderation={PONDERATION_MODE}, Ponderation_level={PONDERATION_MODE_LEVEL}, Base_amount={BASE_AMOUNT}",
-#               decoration=False, silent=False)
 app = FastAPI(lifespan=lifespan)
-
-
-# Configura los orígenes permitidos (puedes añadir el dominio específico o usar "*" para todos)
-origins = [
-    "http://localhost",
-    "http://localhost:3000",
-    "https://mi-dominio.com",
-    # o usa "*" para permitir todos los orígenes
-    "*",
-]
-
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=origins,
-#     allow_credentials=True,
-#     allow_methods=["*"],
-#     allow_headers=["*"],
-# )
-
 
 # Permitir solicitudes desde cualquier origen
 app.add_middleware(
