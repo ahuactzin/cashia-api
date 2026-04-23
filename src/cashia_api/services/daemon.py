@@ -48,7 +48,7 @@ class ModelsConfigurationDaemon:
         self.models_df = models_df
         self.models_ponderations = models_ponderations
 
-        print("Configuración inicial cargada correctamente.")
+        print("Initial configuration loaded successfully.")
 
     def reload_if_needed(self) -> bool:
         """
@@ -71,7 +71,7 @@ class ModelsConfigurationDaemon:
         )
 
         if conf_changed:
-            print(f"Archivo actualizado. Cargando datos... {datetime.now()}")
+            print(f"File updated. Loading data... {datetime.now()}")
             models_df = self._load_models_df()
             models_ponderations = self._build_ponderations(models_df)
 
@@ -79,9 +79,9 @@ class ModelsConfigurationDaemon:
             self.models_ponderations = models_ponderations
             self.last_modified_time = current_modified_time
 
-            print("Datos cargados.")
+            print("Data loaded.")
         else:
-            print(f"El archivo no ha cambiado. Última revisión: {datetime.now()}")
+            print(f"The file has not changed. Last updated: {datetime.now()}")
 
         df_log = self._ensure_log_file()
 
@@ -110,7 +110,7 @@ class ModelsConfigurationDaemon:
             try:
                 self.reload_if_needed()
             except Exception as e:
-                print(f"Error revisando cambios de configuración: {e}")
+                print(f"Error checking configuration changes: {e}")
 
             await asyncio.sleep(self.check_interval_seconds)
 
