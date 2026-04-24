@@ -9,7 +9,7 @@ description = "Cashia FastAPI application"
 readme = "README.md"
 requires-python = ">=3.10"
 authors = [
-  { name = "Juan Manuel Ahuactzin" }
+    { name = "Juan Manuel Ahuactzin", email = "juan.manuel.ahuactzin@gmail.com" }
 ]
 dependencies = [
   "pandas==1.5.3",
