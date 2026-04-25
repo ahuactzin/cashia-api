@@ -8,7 +8,7 @@ The API integrates several internal Cashia packages:
 
 -   **cashia-core** -- Shared utilities and configuration
 -   **cashia-model** -- Machine learning models used for prediction
--   **cce** -- Cashia Credit Engine
+-   **cashia-credit-engine** -- Cashia Credit Engine
 
 The API is intended for local development first, and can later be
 deployed in environments such as AWS.
@@ -24,7 +24,7 @@ Before installing the API, ensure the following are available:
 -   Access to the Cashia repositories:
     -   `cashia-core`
     -   `cashia-model`
-    -   `cce`
+    -   `cashia-credit-engine`
     -   `cashia-api`
 
 Recommended development tools:
@@ -88,8 +88,7 @@ cashia
 ├── cashia-core
 ├── cashia-model
 ├── cashia-api
-├── cce
-└── mlp
+├── cashia-credit-engine
 ```
 
 Install each package in **editable mode**:
@@ -97,8 +96,7 @@ Install each package in **editable mode**:
 ``` bash
 pip install -e cashia-core
 pip install -e cashia-model
-pip install -e cce
-pip install -e mlp
+pip install -e cashia-credit-engine
 pip install -e cashia-api
 ```
 
@@ -136,7 +134,7 @@ cashia-api
 ## Suggested role of each module
 
 -   **main.py**\
-    Entry point of the FastAPI application. Usually defines the `app`,
+    Entry point of the FastAPI application. Defines the `app`,
     CORS configuration, startup/shutdown logic, and router registration.
 
 -   **routers/**\
@@ -157,22 +155,106 @@ cashia-api
     Utility functions used across the API package.
 
 ------------------------------------------------------------------------
-
 # 5. Running the API
 
 The API is built with **FastAPI** and can be launched using **Uvicorn**.
 
+## Local execution
+
 From any directory, with the environment activated:
 
-``` bash
+```bash
 uvicorn cashia_api.main:app --reload
 ```
 
 The API will start at:
 
-``` text
+```text
 http://127.0.0.1:8000
 ```
+
+---
+
+## Running on AWS
+
+To deploy and run the API on Amazon Web Services (AWS), a typical setup uses an **EC2 instance**.
+
+### 1. Connect to your EC2 instance
+
+```bash
+ssh -i your-key.pem ec2-user@your-ec2-public-ip
+```
+
+---
+
+### 2. Set environment variables (important)
+
+For example, if using S3:
+
+```bash
+export STORAGE_BACKEND=s3
+export S3_BUCKET=cashia-prod-data
+export S3_PREFIX=cashia
+```
+
+---
+
+### 3. Run the API (production mode)
+
+Instead of `--reload`, use:
+
+```bash
+uvicorn cashia_api.main:app --host 0.0.0.0 --port 8000
+```
+
+This allows external access.
+
+---
+
+### 5. Open the port in the security group
+
+In your EC2 configuration:
+
+- Go to **Security Groups**
+- Add an **Inbound Rule**:
+  - Type: Custom TCP
+  - Port: 8000
+  - Source: Your IP (recommended) or `0.0.0.0/0` (public)
+
+---
+
+### 5. Access the API
+
+From your browser:
+
+```text
+http://your-ec2-public-ip:8000
+```
+
+Interactive docs:
+
+```text
+http://your-ec2-public-ip:8000/docs
+```
+
+---
+
+## Optional (Recommended for production)
+
+### Use Gunicorn with Uvicorn workers
+
+```bash
+pip install gunicorn
+
+gunicorn -k uvicorn.workers.UvicornWorker cashia_api.main:app --bind 0.0.0.0:8000
+```
+
+### Additional recommendations
+
+- Use **Nginx** as a reverse proxy
+- Configure **HTTPS** (e.g., with Let's Encrypt)
+- Run the API as a service using **systemd**
+
 
 ------------------------------------------------------------------------
 
@@ -242,7 +324,7 @@ S3_PREFIX
 
 ``` powershell
 $env:STORAGE_BACKEND="local"
-$env:LOCAL_STORAGE_ROOT="G:\My Drive\19_Projects\cashia\cashia-core"
+$env:LOCAL_STORAGE_ROOT="C:\Users\juan_\Projects\cashia\cashia-core"
 ```
 
 ### Linux / macOS
@@ -312,7 +394,7 @@ Content-Type: application/json
 
 ``` json
 {
-
+TODO
 }
 ```
 
@@ -320,7 +402,7 @@ Content-Type: application/json
 
 ``` json
 {
-
+TODO
 }
 ```
 
@@ -382,8 +464,7 @@ If imports fail after code changes, reinstall editable packages:
 ``` bash
 pip install -e cashia-core --upgrade
 pip install -e cashia-model --upgrade
-pip install -e cce --upgrade
-pip install -e mlp --upgrade
+pip install -e cashia-credit-engine --upgrade
 pip install -e cashia-api --upgrade
 ```
 
