@@ -1,8 +1,8 @@
 # Cashia Installation Instructions with Docker
 
-1 Create EC2 (See [INSTALATION_INSTRUCTIONS.md](INSTALATION_INSTRUCTIONS.md))
+1 Create EC2 (See [server-set-up.md](server-set-up.md))
 
-2 Create the bucket (See [INSTALATION_INSTRUCTIONS.md](INSTALATION_INSTRUCTIONS.md))
+2 Create the bucket (See [server-set-up.md](server-set-up.md))
 
 3 Install Docker 
 
@@ -14,7 +14,7 @@ sudo systemctl start docker
 sudo usermod -aG docker ubuntu
 ```
 
-4 Clone repositories (See [INSTALATION_INSTRUCTIONS.md](INSTALATION_INSTRUCTIONS.md))
+4 Clone repositories (See [server-set-up.md](server-set-up.md))
 
 5 Go out of your server and reconect
 
