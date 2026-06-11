@@ -63,7 +63,14 @@ Adapt the lines:
 
 According to your bucket
 
-7 Run:
+7 Create a .env file with the access information to the database:
+
+DB_HOST=something.mx
+DB_NAME=something
+DB_USER=usr_something
+DB_PASSWORD=pwd
+
+8 Run:
 
  `docker compose up --build -d`
 
