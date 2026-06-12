@@ -6,7 +6,7 @@
 
 2 Create the bucket (See [server-set-up.md](server-set-up.md))
 
-3 Install Docker 
+3 Install Docker
 
 ```bash
 sudo apt update
