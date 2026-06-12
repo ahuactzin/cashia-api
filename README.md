@@ -13,6 +13,12 @@ The API integrates several internal Cashia packages:
 The API is intended for local development first, and can later be
 deployed in environments such as AWS.
 
+This document describes how to install Cashia on a local server.
+
+For AWS server installation instructions, see [server-set-up.md](server-set-up.md).
+
+For Docker installation instructions, see [docker-set-up.md](docker-set-up.md).
+
 ------------------------------------------------------------------------
 
 # 1. Requirements
