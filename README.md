@@ -10,8 +10,7 @@ The API integrates several internal Cashia packages:
 -   **cashia-model** -- Machine learning models used for prediction
 -   **cashia-credit-engine** -- Cashia Credit Engine
 
-The API is intended for local development first, and can later be
-deployed in environments such as AWS.
+The API is intended for local development and environments such as AWS.
 
 This document describes how to install Cashia on a local server.
 
@@ -83,6 +82,12 @@ source cashia_env/bin/activate
 ------------------------------------------------------------------------
 
 # 3. Install Dependencies
+
+Before installing dependencies, install packaging tools:
+
+``` bash
+pip install --upgrade pip setuptools wheel build
+```
 
 Navigate to the root directory that contains all Cashia repositories.
 
@@ -482,19 +487,6 @@ one from:
 ``` text
 cashia_env
 ```
-
-------------------------------------------------------------------------
-
-# 13. Future Documentation
-
-Additional documentation can later include:
-
--   AWS deployment
--   Docker containers
--   CI/CD pipelines
--   API authentication and security
--   Production configuration
--   Logging and monitoring
 
 ------------------------------------------------------------------------
 
