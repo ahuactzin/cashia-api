@@ -1,24 +1,25 @@
-FROM python:3.11-slim
+FROM python:3.12-slim
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    git \
-    && rm -rf /var/lib/apt/lists/*  
-
-COPY cashia-api/requirements.txt /app/requirements.txt
-RUN pip install -r /app/requirements.txt
-
+# Source packages are copied relative to the repository-root build context.
+# The application packages must contain their real src/ and README.md files.
+COPY constraints.txt /app/constraints.txt
+COPY cashia-api /app/cashia-api
 COPY cashia-core /app/cashia-core
 COPY cashia-model /app/cashia-model
 COPY cashia-credit-engine /app/cashia-credit-engine
-COPY cashia-api /app/cashia-api
 
-RUN pip install -e /app/cashia-core
-RUN pip install -e /app/cashia-model
-RUN pip install -e /app/cashia-credit-engine
-RUN pip install -e /app/cashia-api
+# Resolve third-party and local project requirements in ONE pip invocation.
+# --no-cache-dir reduces image size; the local projects are not installed editable.
+RUN python -m pip install --no-cache-dir \
+    -c /app/constraints.txt \
+    -r /app/cashia-api/requirements.txt \
+    /app/cashia-core \
+    /app/cashia-model \
+    /app/cashia-credit-engine \
+    /app/cashia-api \
+ && python -m pip check
 
 EXPOSE 8000
 
