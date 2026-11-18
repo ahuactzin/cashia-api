@@ -7,7 +7,7 @@ name = "cashia-api"
 version = "0.1.0"
 description = "Cashia FastAPI application"
 readme = "README.md"
-requires-python = ">=3.12,<3.13"
+requires-python = ">=3.13,<3.14"
 authors = [
     { name = "Juan Manuel Ahuactzin", email = "juan.manuel.ahuactzin@gmail.com" }
 ]
@@ -18,7 +18,7 @@ dependencies = [
     "python-multipart==0.0.26",
     "boto3==1.42.83",
     "pandas==2.2.3",
-    "numpy==1.26.0",
+    "numpy==2.2.6",
     "cashia-core==1.1.0",
     "cashia-model==1.1.0",
 ]
