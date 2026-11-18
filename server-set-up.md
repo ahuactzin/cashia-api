@@ -102,6 +102,7 @@ Click:
 ---
 
 ### 7. Get the IP
+
 In the EC2 console, select your instance and look for:
 
 - IPv4 public address
