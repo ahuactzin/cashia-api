@@ -3,28 +3,36 @@
 ## Step 1: Create the Server
 
 ### 1. Create your EC2 server
+
 In the console search:
+
 - EC2
 
 Open the service:
+
 - Amazon EC2
 
 Then click:
+
 - Launch instance
 
 ---
 
 ### 2. Basic configuration
+
 Set these values:
 
-**Name**
+#### Name
+
 - cashia-server
 
-**Operating system**
+#### Operating system
+
 - Ubuntu Server 22.04 LTS  
 (It is the easiest for Python)
 
-**Instance type**
+#### Instance type
+
 - t3.micro  
 Characteristics:
 - 1 vCPU
@@ -36,15 +44,19 @@ This is enough for FastAPI + small models.
 ---
 
 ### 3. Create the SSH key (VERY IMPORTANT)
+
 In **Key pair** select:
+
 - Create new key pair
 
 Configure:
+
 - Key pair name: cashia-key
 - Key type: RSA
 - Private key format: .pem
 
 AWS will download a file:
+
 - cashia-key.pem
 
 ⚠️ Save it very well.  
@@ -53,16 +65,19 @@ It is the only way to access the server.
 ---
 
 ### 4. Network configuration
+
 In **Network settings** click **Edit**
 
 Configure:
 
-**Allow SSH**
+#### Allow SSH
+
 - Type: SSH
 - Port: 22
 - Source: My IP
 
-**Allow access to FastAPI (Create a new rule)**
+#### Allow access to FastAPI (Create a new rule)
+
 - Type: Custom TCP
 - Port: 8000
 - Source: Anywhere
@@ -70,6 +85,7 @@ Configure:
 ---
 
 ### 5. Disk
+
 - 20 GB
 - gp3
 
@@ -78,13 +94,16 @@ Free Tier allows up to 30 GB.
 ---
 
 ### 6. Launch server
+
 Click:
+
 - Launch instance
 
 ---
 
 ### 7. Get the IP
-Look for:
+In the EC2 console, select your instance and look for:
+
 - IPv4 public address
 
 ---
@@ -96,6 +115,7 @@ ssh -i cashia-key.pem ubuntu@IP_DEL_SERVIDOR
 ```
 
 Example:
+
 ```bash
 ssh -i cashia-key.pem ubuntu@3.145.21.44
 ```
@@ -103,8 +123,10 @@ ssh -i cashia-key.pem ubuntu@3.145.21.44
 ---
 
 ### 9. Verify connection
+
 You should see:
-```
+
+```text
 Welcome to Ubuntu 22.04
 ```
 
@@ -113,41 +135,48 @@ Welcome to Ubuntu 22.04
 ## Step 2: Create Python Environment
 
 ### 1. Update server
+
 ```bash
 sudo apt update
 sudo apt upgrade -y
 ```
 
 ### 2. Install tools
+
 ```bash
 sudo apt install software-properties-common -y
 ```
 
 ### 3. Add Python repository
+
 ```bash
 sudo add-apt-repository ppa:deadsnakes/ppa
 sudo apt update
 ```
 
-### 4. Install Python 3.11
+### 4. Install Python 3.13
+
 ```bash
-sudo apt install python3.11 python3.11-venv python3.11-dev -y
+sudo apt install python3.13 python3.13-venv python3.13-dev -y
 ```
 
 ### 5. Verify
+
 ```bash
-python3.11 --version
+python3.13 --version
 ```
 
 ### 6. Create virtual environment
+
 ```bash
 mkdir cashia
 cd cashia
-python3.11 -m venv cashia_env
+python3.13 -m venv cashia_env
 source cashia_env/bin/activate
 ```
 
 ### 7. Upgrade pip
+
 ```bash
 pip install --upgrade pip
 ```
@@ -157,11 +186,13 @@ pip install --upgrade pip
 ## Step 3: GitHub Access
 
 ### Generate SSH key
+
 ```bash
 ssh-keygen -t ed25519 -C "aws-cashia"
 ```
 
 ### View and copy your public key
+
 ```bash
 cat ~/.ssh/id_ed25519.pub
 ```
@@ -171,30 +202,37 @@ cat ~/.ssh/id_ed25519.pub
 Go to GitHub.
 
 Top right:
+
 - Profile → Settings
 
 Then:
+
 - SSH and GPG keys
 
 Click on:
+
 - New SSH key
 
 Enter:
+
 - **Title:** aws-cashia-server  
 - **Key:** (paste the key you copied)
 
 Save.
 
 ### Test connection
+
 ```bash
 ssh -T git@github.com
 ```
 
 ### Clone repositories
+
 ```bash
 git clone git@github.com:TU_USUARIO/cashia-core.git
 git clone git@github.com:TU_USUARIO/cashia-model.git
 git clone git@github.com:TU_USUARIO/cashia-api.git
+git clone git@github.com:TU_USUARIO/cashia-credit-engine.git
 ```
 
 ---
@@ -217,11 +255,13 @@ pip install -e cashia-api
 ## Step 5: Environment variables
 
 Edit:
+
 ```bash
 nano ~/.bashrc
 ```
 
 Add:
+
 ```bash
 export STORAGE_BACKEND=s3
 export S3_BUCKET=cashia-prod-data
@@ -241,6 +281,7 @@ echo $STORAGE_BACKEND
 echo $S3_BUCKET
 echo $S3_PREFIX
 ```
+
 It should display:
 
 ```bash
@@ -281,9 +322,11 @@ S3_PREFIX = cashia
 ```
 
 ---
+
 ## Step 6: Create the bucket
 
 ### 1 Create the bucket
+
 - Go to S3  
 - Click on **Create bucket**  
 - Use the same globally unique name that you selected in the previous step, for example:  
@@ -292,19 +335,24 @@ S3_PREFIX = cashia
 - Leave **Block Public Access** enabled  
 
 ### 2 Create the cashia folder
+
 You can create folders from the console:
+
 1. Enter the bucket  
 2. Click **Create folder**  
 3. Name: `cashia`  
 
 ### 3 Upload the files required by cashia to the folder
+
 From the AWS console:
+
 1. Enter your bucket  
 2. Enter the folder you already created: `cashia`  
 3. Click on **Upload**  
 4. Drag the entire `data` folder  
 
 ### 4 Create the policy for the bucket
+
 - Go to IAM  
 - In the left menu select **Policies**  
 - Click on **Create policy**  
@@ -312,6 +360,7 @@ From the AWS console:
 ### Choose JSON editor
 
 On the policy creation screen:
+
 1. Select **JSON**  
 2. Delete the content that appears  
 3. Paste this policy (adapted to your bucket):  
@@ -353,10 +402,13 @@ On the policy creation screen:
 **Important note:**
 
 The lines:
+
 ```json
 "Resource": "arn:aws:s3:::cashia-test-data"
 ```
+
 and
+
 ```json
 "Resource": "arn:aws:s3:::cashia-test-data/cashia/*"
 ```
@@ -367,6 +419,7 @@ Must match the name you selected for the bucket:
 ## Save the policy
 
 Then:
+
 1. Click **Next**  
 2. Policy name (for example): `cashia-s3-access`  
 3. Click **Create policy**  
@@ -376,6 +429,7 @@ Then:
 ## Create or edit the EC2 Role
 
 Now:
+
 1. Go to **IAM → Roles**  
 2. Click **Create role**  
 3. Type: **AWS Service**  
@@ -421,7 +475,7 @@ print_settings()
 
 It should display something like:
 
-```
+```text
 STORAGE_BACKEND = s3
 LOCAL_STORAGE_ROOT = /home/ubuntu/cashia/data
 S3_BUCKET = cashia-test-data
@@ -452,12 +506,13 @@ Go to the bucket:
 
 You should see:
 
-```
+``` text
 Cashia-test
  └── cashia-api
       └── outputs
            └── test.csv
 ```
+
 ---
 
 ## Step 8: Start server

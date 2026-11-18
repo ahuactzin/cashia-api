@@ -6,9 +6,9 @@ with **FastAPI**.
 
 The API integrates several internal Cashia packages:
 
--   **cashia-core** -- Shared utilities and configuration
--   **cashia-model** -- Machine learning models used for prediction
--   **cashia-credit-engine** -- Cashia Credit Engine
+- **cashia-core** -- Shared utilities and configuration
+- **cashia-model** -- Machine learning models used for prediction
+- **cashia-credit-engine** -- Cashia Credit Engine
 
 The API is intended for local development and environments such as AWS.
 
@@ -20,33 +20,33 @@ For Docker installation instructions, see [docker-set-up.md](docker-set-up.md).
 
 ------------------------------------------------------------------------
 
-# 1. Requirements
+## 1. Requirements
 
 Before installing the API, ensure the following are available:
 
--   Python **3.11**
--   `pip`
--   Access to the Cashia repositories:
-    -   `cashia-core`
-    -   `cashia-model`
-    -   `cashia-credit-engine`
-    -   `cashia-api`
+- Python **3.13**
+- `pip`
+- Access to the Cashia repositories:
+  - `cashia-core`
+  - `cashia-model`
+  - `cashia-credit-engine`
+  - `cashia-api`
 
 Recommended development tools:
 
--   **Anaconda / Miniconda**
--   **Visual Studio Code**
+- **Anaconda / Miniconda**
+- **Visual Studio Code**
 
 ------------------------------------------------------------------------
 
-# 2. Environment Setup
+## 2. Environment Setup
 
 ## Option A --- Using Conda (recommended)
 
 Create the environment:
 
 ``` bash
-conda create -n cashia_env python=3.11
+conda create -n cashia_env python=3.13
 ```
 
 Activate it:
@@ -81,7 +81,7 @@ source cashia_env/bin/activate
 
 ------------------------------------------------------------------------
 
-# 3. Install Dependencies
+## 3. Install Dependencies
 
 Before installing dependencies, install packaging tools:
 
@@ -116,7 +116,7 @@ package.
 
 ------------------------------------------------------------------------
 
-# 4. Project Structure
+## 4. Project Structure
 
 A typical `cashia-api` structure is:
 
@@ -144,29 +144,30 @@ cashia-api
 
 ## Suggested role of each module
 
--   **main.py**\
+- **main.py**\
     Entry point of the FastAPI application. Defines the `app`,
     CORS configuration, startup/shutdown logic, and router registration.
 
--   **routers/**\
+- **routers/**\
     Defines the API endpoints grouped by domain or functionality.
 
--   **services/**\
+- **services/**\
     Contains business logic that should remain separate from the HTTP
     layer.
 
--   **schemas.py**\
+- **schemas.py**\
     Defines request and response models using **Pydantic**.
 
--   **dependencies.py**\
+- **dependencies.py**\
     Centralizes FastAPI dependencies such as shared services,
     configuration managers, or state accessors.
 
--   **utils/**\
+- **utils/**\
     Utility functions used across the API package.
 
 ------------------------------------------------------------------------
-# 5. Running the API
+
+## 5. Running the API
 
 The API is built with **FastAPI** and can be launched using **Uvicorn**.
 
@@ -184,7 +185,7 @@ The API will start at:
 http://127.0.0.1:8000
 ```
 
----
+------------------------------------------------------------------------
 
 ## Running on AWS
 
@@ -196,7 +197,7 @@ To deploy and run the API on Amazon Web Services (AWS), a typical setup uses an 
 ssh -i your-key.pem ec2-user@your-ec2-public-ip
 ```
 
----
+------------------------------------------------------------------------
 
 ### 2. Set environment variables (important)
 
@@ -208,7 +209,7 @@ export S3_BUCKET=cashia-prod-data
 export S3_PREFIX=cashia
 ```
 
----
+------------------------------------------------------------------------
 
 ### 3. Run the API (production mode)
 
@@ -220,7 +221,7 @@ uvicorn cashia_api.main:app --host 0.0.0.0 --port 8000
 
 This allows external access.
 
----
+------------------------------------------------------------------------
 
 ### 5. Open the port in the security group
 
@@ -232,7 +233,7 @@ In your EC2 configuration:
   - Port: 8000
   - Source: Your IP (recommended) or `0.0.0.0/0` (public)
 
----
+------------------------------------------------------------------------
 
 ### 5. Access the API
 
@@ -248,7 +249,7 @@ Interactive docs:
 http://your-ec2-public-ip:8000/docs
 ```
 
----
+------------------------------------------------------------------------
 
 ## Optional (Recommended for production)
 
@@ -266,10 +267,9 @@ gunicorn -k uvicorn.workers.UvicornWorker cashia_api.main:app --bind 0.0.0.0:800
 - Configure **HTTPS** (e.g., with Let's Encrypt)
 - Run the API as a service using **systemd**
 
-
 ------------------------------------------------------------------------
 
-# 6. Interactive API Documentation
+## 6. Interactive API Documentation
 
 FastAPI automatically generates documentation.
 
@@ -291,17 +291,17 @@ These interfaces allow testing endpoints directly from the browser.
 
 ------------------------------------------------------------------------
 
-# 7. Example Development Workflow
+## 7. Example Development Workflow
 
 Typical development cycle:
 
-1.  Modify API code
-2.  Run the API with reload enabled
-3.  Test endpoints using:
-    -   Swagger UI
-    -   curl
-    -   Postman
-    -   frontend applications
+1. Modify API code
+2. Run the API with reload enabled
+3. Test endpoints using:
+    - Swagger UI
+    - curl
+    - Postman
+    - frontend applications
 
 Example:
 
@@ -317,7 +317,7 @@ pip install -e cashia-api --upgrade
 
 ------------------------------------------------------------------------
 
-# 8. Environment Variables
+## 8. Environment Variables
 
 Depending on your current architecture, the API may use environment
 variables such as:
@@ -331,14 +331,14 @@ S3_PREFIX
 
 ## Example: local storage
 
-### Windows PowerShell
+### Windows PowerShell — local storage
 
 ``` powershell
 $env:STORAGE_BACKEND="local"
 $env:LOCAL_STORAGE_ROOT="C:\Users\juan_\Projects\cashia\cashia-core"
 ```
 
-### Linux / macOS
+### Linux / macOS — local storage
 
 ``` bash
 export STORAGE_BACKEND=local
@@ -347,7 +347,7 @@ export LOCAL_STORAGE_ROOT=/path/to/cashia-core
 
 ## Example: S3 storage
 
-### Windows PowerShell
+### Windows PowerShell — S3 storage
 
 ``` powershell
 $env:STORAGE_BACKEND="s3"
@@ -355,7 +355,7 @@ $env:S3_BUCKET="my-cashia-bucket"
 $env:S3_PREFIX="cashia-dev"
 ```
 
-### Linux / macOS
+### Linux / macOS — S3 storage
 
 ``` bash
 export STORAGE_BACKEND=s3
@@ -365,7 +365,7 @@ export S3_PREFIX=cashia-dev
 
 ------------------------------------------------------------------------
 
-# 9. CORS Configuration
+## 9. CORS Configuration
 
 If the API is accessed from a frontend application running in a browser,
 **CORS** may need to be configured.
@@ -391,7 +391,7 @@ Adjust allowed origins according to your frontend environment.
 
 ------------------------------------------------------------------------
 
-# 10. Example Request and Response
+## 10. Example Request and Response
 
 The exact endpoints depend on your router definitions, but a typical
 prediction endpoint might look like this.
@@ -422,7 +422,7 @@ API.
 
 ------------------------------------------------------------------------
 
-# 11. Running in Development
+## 11. Running in Development
 
 Recommended command:
 
@@ -444,7 +444,7 @@ uvicorn cashia_api.main:app --reload --host 0.0.0.0
 
 ------------------------------------------------------------------------
 
-# 12. Troubleshooting
+## 12. Troubleshooting
 
 ## Port already in use
 
@@ -465,7 +465,7 @@ python --version
 Expected:
 
 ``` text
-Python 3.11.x
+Python 3.13.x
 ```
 
 ## Import errors
@@ -490,7 +490,7 @@ cashia_env
 
 ------------------------------------------------------------------------
 
-# Author
+## Author
 
 Juan Manuel Ahuactzin\
 Cashia Project
