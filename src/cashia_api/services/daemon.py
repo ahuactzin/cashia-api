@@ -5,13 +5,13 @@ from typing import Optional
 import pandas as pd
 
 from cashia_core.common_tools.storage import get_storage
-from cashia_core.common_tools.configuration.resource_keys import get_resource_path
+from cashia_core.common_tools.configuration.resource_keys import get_resource_file
 from cashia_core.ponderation.initializer import fill_initial_configuration
 
 
 class ModelsConfigurationDaemon:
-    CONFIG_FILE = get_resource_path("configuration")
-    CONFIG_LOG_FILE = get_resource_path("configuration_log")
+    CONFIG_FILE = get_resource_file("configuration")
+    CONFIG_LOG_FILE = get_resource_file("configuration_log")
 
     def __init__(self, check_interval_seconds: int = 900):
         self.storage = get_storage()
